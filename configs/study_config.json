@@ -1,0 +1,95 @@
+{
+  "study": "Direct PLS two-by-two exploratory comparison for rectal cancer LVI",
+  "data_source": "福州大学附属省立医院",
+  "cohort": {
+    "eligible_pool": 138,
+    "sample": 120,
+    "train": 84,
+    "test": 36,
+    "train_positive": 57,
+    "train_negative": 27,
+    "test_positive": 25,
+    "test_negative": 11
+  },
+  "sampling_seed": 2026102307,
+  "split_seed": 2026102308,
+  "main_experiment_seed": 20261025301,
+  "inputs": [
+    "T2",
+    "ADC",
+    "IVIM D",
+    "IVIM f"
+  ],
+  "Dstar": false,
+  "preprocessing": {
+    "spacing_mm": [
+      1,
+      1,
+      1
+    ],
+    "patient_local_kmeans_k": 3,
+    "max_cluster_voxels": 4000,
+    "n_init": 5,
+    "cluster_seed": 64212,
+    "contour_variants_mm": [
+      -1,
+      0,
+      1
+    ],
+    "feature_summary": "median across the three contours"
+  },
+  "feature_qc": {
+    "min_complete": 0.9,
+    "min_absolute_ICC": 0.75,
+    "remove_constant": true,
+    "max_abs_spearman": 0.95
+  },
+  "direction_filter": {
+    "bootstrap_n": 40,
+    "fixed_thresholds": [
+      0,
+      0.85
+    ],
+    "effect": "univariate AUC minus 0.5"
+  },
+  "model": {
+    "normalizations": [
+      "PercentileZ",
+      "RobustZ"
+    ],
+    "feature_views": [
+      "OrderedCompact",
+      "MeanContrast",
+      "ContrastOnly"
+    ],
+    "PLS_components": [
+      1,
+      2,
+      3
+    ],
+    "LR_C": [
+      0.03,
+      0.3
+    ],
+    "LR_class_weight": "balanced",
+    "LR_penalty": "l2",
+    "clinical_variables": 11,
+    "candidate_count_per_stream": 36
+  },
+  "validation": {
+    "outer_folds": 5,
+    "inner_folds": 5,
+    "inner_repeats": 3,
+    "selection_score": "MeanInnerAUC - .10*InnerSD - .30*max(MeanInnerFitAUC-MeanInnerAUC-.10,0)",
+    "training_fit_preference": [
+      0.75,
+      0.7
+    ],
+    "threshold": "Youden index on all 84 outer out-of-fold scores",
+    "CI": "5000 class-stratified paired bootstrap samples of frozen 36-case scores"
+  },
+  "interpretation": "Historically reused internal exploratory data; not new independent/external validation. All five folds retained.",
+  "public_reproduction": "Aggregate checks and figures only; patient data, feature matrices, fitted checkpoints, historical caches and patient predictions are omitted.",
+  "project": "MRI habitat radiomics exploration",
+  "current_task": "Rectal cancer lymphovascular invasion prediction"
+}
